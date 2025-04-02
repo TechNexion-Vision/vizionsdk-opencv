@@ -11,6 +11,8 @@
 #include <opencv2/highgui.hpp>
 
 int main() {
+    std::cout << "Opencv Version: " << CV_VERSION << std::endl;
+
     // get the camera list
     std::vector<std::string> dev_list;
     int can_num = VxDiscoverCameraDevices(dev_list);
@@ -20,20 +22,33 @@ int main() {
     }
 
     int dev_idx = 0;
-    // initial the camera
+    // initial the index 0 camera 
     std::cout << "seletected [" << dev_idx << "] device" << std::endl;
     std::cout << "device name: " << dev_list[dev_idx] << std::endl;
     auto cam = VxInitialCameraDevice(dev_idx);
 
     VxOpen(cam);
 
+    // get format to min size for mjpg format
+    std::vector<VxFormat> fmt_list;
+    VxGetFormatList(cam, fmt_list);
+    int min_width = fmt_list[0].width;
+    int min_height = fmt_list[0].height;
+    for (auto fmt : fmt_list) {
+        // find smallest size format
+        if (fmt.width * fmt.height < min_width * min_height) {
+            min_width = fmt.width;
+            min_height = fmt.height;
+        }
+    }
+
     // capture the video and display with cv2.imshow()
     cv::VideoCapture cap;
-    cap = cv::VideoCapture(dev_idx, cv::CAP_DSHOW);
+    cap = cv::VideoCapture(dev_idx);
+    cap.set(cv::CAP_PROP_FRAME_WIDTH, min_width);
+    cap.set(cv::CAP_PROP_FRAME_HEIGHT, min_height);
     cv::Mat frameBefore;
-    cap.read(frameBefore);
-    cv::namedWindow("Before setting", 0);
-    cv::resizeWindow("Before setting", 640, 480);
+    cap >> frameBefore;
     cv::imshow("Before setting", frameBefore);
     cv::waitKey(0);
     cv::destroyAllWindows();
@@ -55,11 +70,11 @@ int main() {
     std::cout << "After setting UVC brightness: " << value << std::endl;
 
     // capture the video after setting the property and display with cv2.imshow()
-    cap = cv::VideoCapture(dev_idx, cv::CAP_DSHOW);
+    cap = cv::VideoCapture(dev_idx);
+    cap.set(cv::CAP_PROP_FRAME_WIDTH, min_width);
+    cap.set(cv::CAP_PROP_FRAME_HEIGHT, min_height);
     cv::Mat frameAfter;
-    cap.read(frameAfter);
-    cv::namedWindow("After setting", 0);
-    cv::resizeWindow("After setting", 640, 480);
+    cap >> frameAfter;
     cv::imshow("After setting", frameAfter);
     cv::waitKey(0);
     cv::destroyAllWindows();

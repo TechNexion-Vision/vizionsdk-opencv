@@ -21,14 +21,25 @@ camera = pyvizionsdk.VxInitialCameraDevice(idx)
 result = pyvizionsdk.VxOpen(camera)
 print("Open camera return code:", result)
 
+result, fmt_list = pyvizionsdk.VxGetFormatList(camera)
+min_width = fmt_list[0].width
+min_height = fmt_list[0].height
+for fmt in fmt_list:
+    # find smallest size format
+    if (fmt.width * fmt.height < min_width * min_height):
+        min_width = fmt.width
+        min_height = fmt.height
+
 # captured by opencv
-cam = cv2.VideoCapture(idx)
+cap = cv2.VideoCapture(idx)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, min_width)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, min_height)
 # Capture frame
-ret, frame = cam.read()
+ret, frame = cap.read()
 cv2.imshow('Before setting', frame)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
-cam.release()
+cap.release()
 
 # get the brightness
 result, brightness, flag = pyvizionsdk.VxGetUVCImageProcessing(camera, VX_UVC_IMAGE_PROPERTIES.UVC_IMAGE_BRIGHTNESS)
@@ -47,12 +58,14 @@ print("Flag:", flag)
 print("Return code:", result)
 
 # captured by opencv
-cam = cv2.VideoCapture(idx)
+cap = cv2.VideoCapture(idx)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, min_width)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, min_height)
 # Capture frame
-ret, frame = cam.read()
+ret, frame = cap.read()
 cv2.imshow('After setting', frame)
 cv2.waitKey(0)
-cam.release()
+cap.release()
 cv2.destroyAllWindows()
 
 # close camera

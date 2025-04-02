@@ -11,6 +11,8 @@
 #include <opencv2/highgui.hpp>
 
 int main() {
+    std::cout << "Opencv Version: " << CV_VERSION << std::endl;
+
     // get the camera list
     std::vector<std::string> dev_list;
     int can_num = VxDiscoverCameraDevices(dev_list);
@@ -20,35 +22,41 @@ int main() {
     }
 
     int dev_idx = 0;
-    // initial the camera
+    // initial the index 0 camera
     std::cout << "seletected [" << dev_idx << "] device" << std::endl;
     std::cout << "device name: " << dev_list[dev_idx] << std::endl;
     auto cam = VxInitialCameraDevice(dev_idx);
 
     VxOpen(cam);
     
-    // get format list
+    // set format to min size for mjpg format
     std::vector<VxFormat> fmt_list;
     VxGetFormatList(cam, fmt_list);
-    int min_width = 1920;
-    int min_height = 1080;
-    VxFormat mjpg_fmt;
+    int min_width = fmt_list[0].width;
+    int min_height = fmt_list[0].height;
+    VxFormat min_fmt;
     for (auto fmt : fmt_list) {
         // find MJPG smallest size format
         if (fmt.format == VX_IMAGE_FORMAT::MJPG &&
             fmt.width * fmt.height < min_width * min_height) {
             min_width = fmt.width;
             min_height = fmt.height;
-            mjpg_fmt = fmt;
+            min_fmt = fmt;
         }
     }
+ 
+    if (VxSetFormat(cam, min_fmt) == 0) {
+        std::cout << "Set Capture Format Success!" << std::endl;
+    } else {
+        std::cout << "Set Capture Format Failed!" << std::endl;
+    }
 
-    // set the MJPG format
-    VxSetFormat(cam, mjpg_fmt);
+    // set the min format
+    VxSetFormat(cam, min_fmt);
     // start streaming
     VxStartStreaming(cam);
 
-    // get the MJPG format image
+    // get the min format image
     uint8_t* raw_data = new uint8_t[3840 * 2160 * 2];
     int raw_size = 0;
     VxGetImage(cam, raw_data, &raw_size, 2500);
