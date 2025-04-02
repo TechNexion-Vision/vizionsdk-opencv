@@ -4,6 +4,8 @@ from pyvizionsdk import VX_UVC_IMAGE_PROPERTIES
 import cv2
 import numpy as np
 
+import platform
+
 # get the camera list
 result, camera_list = pyvizionsdk.VxDiscoverCameraDevices()
 print("Return code:", result)
@@ -31,7 +33,10 @@ for fmt in fmt_list:
         min_height = fmt.height
 
 # captured by opencv
-cap = cv2.VideoCapture(idx, cv2.CAP_DSHOW)
+if platform.system() == 'Windows':
+    cap = cv2.VideoCapture(idx, cv2.CAP_DSHOW)
+else:
+    cap = cv2.VideoCapture(idx)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, min_width)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, min_height)
 # Capture frame
@@ -58,7 +63,10 @@ print("Flag:", flag)
 print("Return code:", result)
 
 # captured by opencv
-cap = cv2.VideoCapture(idx, cv2.CAP_DSHOW)
+if platform.system() == 'Windows':
+    cap = cv2.VideoCapture(idx, cv2.CAP_DSHOW)
+else:
+    cap = cv2.VideoCapture(idx)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, min_width)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, min_height)
 # Capture frame
