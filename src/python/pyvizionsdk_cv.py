@@ -48,5 +48,7 @@ cv2.imshow("MJPG Image", image)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
+# stop streaming
+pyvizionsdk.VxStopStreaming(camera)
 # close camera
 pyvizionsdk.VxClose(camera)
