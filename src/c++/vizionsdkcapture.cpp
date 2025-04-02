@@ -35,8 +35,9 @@ int main() {
     int min_width = fmt_list[0].width;
     int min_height = fmt_list[0].height;
     for (auto fmt : fmt_list) {
-        // find smallest size format
-        if (fmt.width * fmt.height < min_width * min_height) {
+        / find MJPG smallest size format
+        if (fmt.format == VX_IMAGE_FORMAT::MJPG &&
+            fmt.width * fmt.height < min_width * min_height) {
             min_width = fmt.width;
             min_height = fmt.height;
         }
