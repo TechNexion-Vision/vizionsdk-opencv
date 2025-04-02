@@ -44,7 +44,7 @@ int main() {
 
     // capture the video and display with cv2.imshow()
     cv::VideoCapture cap;
-    cap = cv::VideoCapture(dev_idx);
+    cap = cv::VideoCapture(dev_idx, cv::CAP_DSHOW);
     cap.set(cv::CAP_PROP_FRAME_WIDTH, min_width);
     cap.set(cv::CAP_PROP_FRAME_HEIGHT, min_height);
     cv::Mat frameBefore;
@@ -70,7 +70,7 @@ int main() {
     std::cout << "After setting UVC brightness: " << value << std::endl;
 
     // capture the video after setting the property and display with cv2.imshow()
-    cap = cv::VideoCapture(dev_idx);
+    cap = cv::VideoCapture(dev_idx, cv::CAP_DSHOW);
     cap.set(cv::CAP_PROP_FRAME_WIDTH, min_width);
     cap.set(cv::CAP_PROP_FRAME_HEIGHT, min_height);
     cv::Mat frameAfter;

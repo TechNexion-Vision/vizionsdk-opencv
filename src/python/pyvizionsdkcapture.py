@@ -31,7 +31,7 @@ for fmt in fmt_list:
         min_height = fmt.height
 
 # captured by opencv
-cap = cv2.VideoCapture(idx)
+cap = cv2.VideoCapture(idx, cv2.CAP_DSHOW)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, min_width)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, min_height)
 # Capture frame
@@ -58,7 +58,7 @@ print("Flag:", flag)
 print("Return code:", result)
 
 # captured by opencv
-cap = cv2.VideoCapture(idx)
+cap = cv2.VideoCapture(idx, cv2.CAP_DSHOW)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, min_width)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, min_height)
 # Capture frame
