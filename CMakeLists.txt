@@ -21,7 +21,7 @@ if(WIN32)
     find_package(OpenCV REQUIRED)
     include_directories(${OpenCV_INCLUDE_DIRS}) 
 elseif(UNIX)
-    find_package(OpenCV 4.9.0 REQUIRED)
+    find_package(OpenCV REQUIRED)
     include_directories(${OpenCV_INCLUDE_DIRS})   
 endif()
 
