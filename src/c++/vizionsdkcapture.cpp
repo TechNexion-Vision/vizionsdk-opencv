@@ -32,8 +32,8 @@ int main() {
     // get format to min size for mjpg format
     std::vector<VxFormat> fmt_list;
     VxGetFormatList(cam, fmt_list);
-    int min_width = fmt_list[0].width;
-    int min_height = fmt_list[0].height;
+    int min_width = 1920;
+    int min_height = 1080;
     for (auto fmt : fmt_list) {
         // find MJPG smallest size format
         if (fmt.format == VX_IMAGE_FORMAT::MJPG &&

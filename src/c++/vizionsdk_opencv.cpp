@@ -32,8 +32,8 @@ int main() {
     // set format to min size for mjpg format
     std::vector<VxFormat> fmt_list;
     VxGetFormatList(cam, fmt_list);
-    int min_width = fmt_list[0].width;
-    int min_height = fmt_list[0].height;
+    int min_width = 1920;
+    int min_height = 1080;
     VxFormat min_fmt;
     for (auto fmt : fmt_list) {
         // find MJPG smallest size format
@@ -44,15 +44,13 @@ int main() {
             min_fmt = fmt;
         }
     }
- 
+
     if (VxSetFormat(cam, min_fmt) == 0) {
         std::cout << "Set Capture Format Success!" << std::endl;
     } else {
         std::cout << "Set Capture Format Failed!" << std::endl;
     }
 
-    // set the min format
-    VxSetFormat(cam, min_fmt);
     // start streaming
     VxStartStreaming(cam);
 
