@@ -69,5 +69,6 @@ int main() {
     cv::destroyAllWindows();
 
     VxStopStreaming(cam);
+    VxClose(cam);
 	return 0;
 }
