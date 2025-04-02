@@ -56,11 +56,8 @@ if(WIN32)
     endif()
 elseif(UNIX)
     add_definitions(-D_LINUX)
-    find_package(PkgConfig REQUIRED)
-    pkg_check_modules(OpenCV REQUIRED opencv4)
+    find_package(OpenCV 4.9.0 REQUIRED)
     include_directories(${OpenCV_INCLUDE_DIRS})
-    # Remove opencv_ts from the list
-    list(REMOVE_ITEM OpenCV_LIBRARIES opencv_ts)
 
     include_directories(${PLATFORM_DIR})
     target_link_libraries(VizionCapture ${PLATFORM_DIR}/libVizionSDK.so ${OpenCV_LIBRARIES})
