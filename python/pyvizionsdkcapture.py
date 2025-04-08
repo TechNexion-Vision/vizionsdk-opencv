@@ -1,5 +1,5 @@
 import pyvizionsdk
-from pyvizionsdk import VX_UVC_IMAGE_PROPERTIES
+from pyvizionsdk import VX_UVC_IMAGE_PROPERTIES, VX_IMAGE_FORMAT
 
 import cv2
 import numpy as np
@@ -23,14 +23,24 @@ camera = pyvizionsdk.VxInitialCameraDevice(idx)
 result = pyvizionsdk.VxOpen(camera)
 print("Open camera return code:", result)
 
-result, fmt_list = pyvizionsdk.VxGetFormatList(camera)
-min_width = fmt_list[0].width
-min_height = fmt_list[0].height
-for fmt in fmt_list:
-    # find smallest size format
-    if (fmt.width * fmt.height < min_width * min_height):
-        min_width = fmt.width
-        min_height = fmt.height
+# get format
+result, format_list = pyvizionsdk.VxGetFormatList(camera)
+mjpg_format = None
+min_resolution = float('inf')
+for format in format_list:
+    # get mjpg format and minimum resolution
+    if format.format == VX_IMAGE_FORMAT.VX_IMAGE_FORMAT_MJPG:
+        resolution = format.width * format.height
+        if resolution < min_resolution:
+            min_resolution = resolution
+            mjpg_format = format
+print("Return code:", result)
+
+# set format
+result = pyvizionsdk.VxSetFormat(camera, mjpg_format)
+
+min_width = mjpg_format.width
+min_height = mjpg_format.height
 
 # captured by opencv
 if platform.system() == 'Windows':
