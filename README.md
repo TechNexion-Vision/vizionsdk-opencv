@@ -64,7 +64,7 @@ Before building and running this project, ensure you have the following installe
   1. Visit the OpenCV release page: [OpenCV](https://github.com/opencv/opencv/releases)
   2. Download the latest Windows version(opencv-{version}-windows.exe).
   3. Extract it to `C:\opencv` or another location of your choice.
-  4. Set the path in [CMakeList.txt](http://10.20.30.20:4000/Selena/VizionSDK_OpenCV/src/branch/main/CMakeLists.txt#L19) to your opencv location
+  4. Set the path in [CMakeList.txt](https://github.com/TechNexion-Vision/vizionsdk-opencv/tree/main/CMakeLists.txt#L19) to your opencv location
     ```
     set(OpenCV_DIR "{your_OpenCV_path}/build/x64/vc16/lib")
     ```
@@ -117,7 +117,7 @@ Before building and running this project, ensure you have the following installe
   ```
 5. Build the project using the generated build files: `make`
 
-## Running
+## Running the execution
 
 ### Windows
 
@@ -131,7 +131,12 @@ Before building and running this project, ensure you have the following installe
 
 - **Using `python` to run the python code**
     ```
-    python src/python/pyvizionsdk_cv.py
-    python src/python/pyvizionsdkcapture.py
+    python python/pyvizionsdk_cv.py
+    python python/pyvizionsdkcapture.py
     ```
+
+## Execution Description
+
+- VizionOpenCV / pyvizionsdk_cv.py : It's a example for how to get the image by the VizionSDK(or pyvizionsdk) and use OpenCV imshow to display the image.
+- VizionCapture / pyvizionsdkcapture.py : It's a example for how to adjust the brightness by the VizionSDK(or pyvizionsdk) and use OpenCV VideoCapture to capture the image.
    
