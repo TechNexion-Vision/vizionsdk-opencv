@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(vizionsdk REQUIRED)
 
 # code src directory path
-set(SOURCES "${CMAKE_SOURCE_DIR}/cpp/")
+set(SOURCES "${CMAKE_SOURCE_DIR}")
 
 # Add executable
 add_executable(VizionCapture ${SOURCES}/vizionsdkcapture.cpp)
