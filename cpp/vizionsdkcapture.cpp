@@ -153,6 +153,8 @@ int main() {
     }
 
     cap.release();
+    cv::destroyAllWindows();
+    
     VxClose(cam);
     return 0;
 }
