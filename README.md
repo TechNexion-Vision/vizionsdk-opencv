@@ -38,7 +38,7 @@ Before building and running this project, ensure you have the following installe
     - OpenCV can be downloaded at release page: [OpenCV](https://opencv.org/releases/)
       - **Windows**: Before building the sample code, please ensure the path in [CMakeList.txt](https://github.com/TechNexion-Vision/vizionsdk-opencv/tree/main/cpp/CMakeLists.txt#L19) is correctly set to your local OpenCV installation.
       - **Linux**: 
-        To install OpenCV, please follow the steps provided in the official tutorial: [OpenCV installation](https://docs.opencv.org/4.1.0/d7/d9f/tutorial_linux_install.html)   
+        To install OpenCV, please follow the steps provided in the official tutorial: [OpenCV installation](https://docs.opencv.org/4.9.0/d7/d9f/tutorial_linux_install.html)   
   - For Python Development: Install with `pip install opencv-python`
    
 ## Building for C++ Project
@@ -60,8 +60,8 @@ Before building and running this project, ensure you have the following installe
 
 After successful building the project, the executable will be located in the `build` directory
 
-**Windows**: Run the executable from the Command Prompt or double-click it in File Explorer.  
-**Linux**: Open a terminal and run it using `./{execution_name}`.
+- **Windows**: Run the executable from the Command Prompt or double-click it in File Explorer.  
+- **Linux**: Open a terminal and run it using `./{execution_name}`.
 
 ## Running the Python project
 
