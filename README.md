@@ -118,14 +118,17 @@ Before building and running this project, ensure you have the following installe
 5. Build the project using the generated build files: `make`
 
 ## Running the execution
+> ⚠️ Warning:  
+> - eHDR-related properties are only supported on **VCI-AR0821** and **VCI-AR0822**. Running eHDR example on unsupported devices may result in undefined behavior.  
+> - Ensure that **eHDR mode** is **enabled** before running the eHDR example.
 
 ### Windows
 
-- After successful building, you will find the executable `VizionOpenCV.exe` and `VizionCapture.exe` in the `build` directory. You can run it from the command line or by double-clicking on it in the File Explorer.
+- After successful building, you will find the executable `VizionOpenCV.exe`, `VizionCapture.exe` and `VizioneHDR.exe` in the `build` directory. You can run it from the command line or by double-clicking on it in the File Explorer.
 
 ### Linux
 
-- After successful building, you will find the executable `VizionOpenCV` and `VizionCapture` in the `build` directory. You can run it from the terminal by executing `./VizionOpenCV` and `./VizionCapture`.
+- After successful building, you will find the executable `VizionOpenCV`, `VizionCapture` and `VizioneHDR` in the `build` directory. You can run it from the terminal by executing `./{execution_name}`.
 
 ## Running the Python project
 
@@ -133,10 +136,13 @@ Before building and running this project, ensure you have the following installe
     ```
     python python/pyvizionsdk_cv.py
     python python/pyvizionsdkcapture.py
+    python python/pyvizionsdk_ehdr.py
     ```
 
 ## Execution Description
 
-- VizionOpenCV / pyvizionsdk_cv.py : It's a example for how to get the image by the VizionSDK(or pyvizionsdk) and use OpenCV imshow to display the image.
-- VizionCapture / pyvizionsdkcapture.py : It's a example for how to adjust the brightness by the VizionSDK(or pyvizionsdk) and use OpenCV VideoCapture to capture the image.
+- **VizionOpenCV / pyvizionsdk_cv.py** : It's a example for how to get the image by the VizionSDK(or pyvizionsdk) and use OpenCV imshow to display the image.
+- **VizionCapture / pyvizionsdkcapture.py** : It's a example for how to adjust the brightness by the VizionSDK(or pyvizionsdk) and use OpenCV VideoCapture to capture the image.
+- **VizioneHDR / pyvizionsdk_ehdr.py** : It's a example for how to adjust the eHDR exposure max number by the VizionSDK(or pyvizionsdk) and use OpenCV VideoCapture to capture the image.
+
    
