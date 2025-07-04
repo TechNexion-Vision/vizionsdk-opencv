@@ -1,3 +1,6 @@
+/* 
+vizionsdk_opencv.cpp - Demonstrates how to use vizionsdk to get the image and display the image by OpenCV.
+*/
 #include <iostream>
 #include <vector>
 #include <string>
@@ -9,16 +12,20 @@
 
 #include "VizionSDK.h"
 #include <opencv2/highgui.hpp>
-
 int main() {
-    std::cout << "Opencv Version: " << CV_VERSION << std::endl;
 
     // get the camera list
     std::vector<std::string> dev_list;
-    int can_num = VxDiscoverCameraDevices(dev_list);
-    if (can_num == 0) {
+    int cam_num = VxDiscoverCameraDevices(dev_list);
+    if (cam_num == 0) {
         std::cout << "Cannot Find any Cameras!" << std::endl;
         return -1;
+    }
+
+    // Print the device list
+    std::cout << "Device List:" << std::endl;
+    for (auto device : dev_list) {
+        std::cout << device << std::endl;
     }
 
     int dev_idx = 0;
@@ -28,7 +35,7 @@ int main() {
     auto cam = VxInitialCameraDevice(dev_idx);
 
     VxOpen(cam);
-    
+
     // set format to min size for mjpg format
     std::vector<VxFormat> fmt_list;
     VxGetFormatList(cam, fmt_list);

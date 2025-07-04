@@ -1,3 +1,7 @@
+"""
+pyvizionsdk_cv.cpp - Demonstrates how to use vizionsdk to get the image and display the image by OpenCV.
+"""
+
 import pyvizionsdk
 from pyvizionsdk import VX_IMAGE_FORMAT
 
@@ -5,10 +9,12 @@ import cv2
 import numpy as np
 
 result, camera_list = pyvizionsdk.VxDiscoverCameraDevices()
-print("Return code:", result)
-print("Discovered cameras:", camera_list)
+if result < 1:
+    print('No cameras discovered.')
+    quit()
 
 # print camera_list
+print("Device List:\n")
 for camera in camera_list:
     print(camera)
 
