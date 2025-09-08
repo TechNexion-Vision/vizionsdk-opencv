@@ -27,30 +27,30 @@ print("Open camera return code:", result)
 
 # get format
 result, format_list = pyvizionsdk.VxGetFormatList(camera)
-mjpg_format = None
+UYVY_format = None
 cap_resolution = 1920*1080
 for format in format_list:
-    # get mjpg format and 1920*1080 resolution
-    if format.format == VX_IMAGE_FORMAT.VX_IMAGE_FORMAT_MJPG:
+    # get UYVY format and 1920*1080 resolution
+    if format.format == VX_IMAGE_FORMAT.VX_IMAGE_FORMAT_UYVY:
         resolution = format.width * format.height
-        if resolution < cap_resolution:
-            min_resolution = resolution
-            mjpg_format = format
+        if resolution == cap_resolution:
+            UYVY_format = format
 print("Return code:", result)
 
 # set format
-result = pyvizionsdk.VxSetFormat(camera, mjpg_format)
+result = pyvizionsdk.VxSetFormat(camera, UYVY_format)
 
 # start streaming
 result = pyvizionsdk.VxStartStreaming(camera)
 
 # get the MJPG format image
-result, image = pyvizionsdk.VxGetImage(camera, 1000, mjpg_format)
+result, image = pyvizionsdk.VxGetImage(camera, 1000, UYVY_format)
 
 # retrieve the data to opencv and display with cv2.imshow()
 nparr = np.frombuffer(image, np.uint8)
-image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-cv2.imwrite("capture.png", image)
+uyvy = nparr.reshape((1080, 1920, 2))
+bgr = cv2.cvtColor(uyvy, cv2.COLOR_YUV2BGR_UYVY)
+cv2.imwrite("capture.png", bgr)
 
 # stop streaming
 pyvizionsdk.VxStopStreaming(camera)

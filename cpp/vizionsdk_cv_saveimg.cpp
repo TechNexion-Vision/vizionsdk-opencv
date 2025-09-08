@@ -11,6 +11,8 @@ vizionsdk_cv_saveimg.cpp - Demonstrates how to use vizionsdk to get the image an
 #endif
 
 #include "VizionSDK.h"
+#include <opencv2/core.hpp>
+#include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 int main() {
 
@@ -36,15 +38,15 @@ int main() {
 
     VxOpen(cam);
 
-    // set format to 1920*1080 for mjpg format
+    // set format to 1920*1080 for UYVY format
     std::vector<VxFormat> fmt_list;
     VxGetFormatList(cam, fmt_list);
     int cap_width = 1920;
     int cap_height = 1080;
     VxFormat cap_fmt;
     for (auto fmt : fmt_list) {
-        // find MJPG 1920*1080 format
-        if (fmt.format == VX_IMAGE_FORMAT::MJPG &&
+        // find UYVY 1920*1080 format
+        if (fmt.format == VX_IMAGE_FORMAT::UYVY &&
             fmt.width * fmt.height == cap_width * cap_height) {
             cap_width = fmt.width;
             cap_height = fmt.height;
@@ -68,8 +70,13 @@ int main() {
 
     // retrieve the data into the mat array and save with cv2.imwrite()
     cv::Mat matImg;
-    matImg = cv::imdecode(cv::Mat(1, raw_size, CV_8UC1, raw_data), cv::IMREAD_COLOR);
-    cv::imwrite("capture.png", matImg);
+    matImg = cv::Mat(cap_height, cap_width, CV_8UC2, raw_data);
+
+     // convert from UYVY to BGR
+    cv::Mat bgrImg;
+    cv::cvtColor(matImg, bgrImg, cv::COLOR_YUV2BGR_UYVY);
+
+    cv::imwrite("capture.png", bgrImg);
 
     VxStopStreaming(cam);
     VxClose(cam);
