@@ -16,6 +16,9 @@ The following sample programs demonstrate key functionalities using VizionSDK (o
 - **vizionsdk_ehdr.cpp / pyvizionsdk_ehdr.py**  
   Shows how to configure the eHDR maximum exposure number and capture images using OpenCV’s `VideoCapture`.
 
+- **vizionsdk_cv_saveimg.cpp / pyvizionsdk_cv_saveimg.py**  
+  Captures images from the camera and saves them using OpenCV's `imsave` function.
+
 ## Prerequisites
 
 Before building and running this project, ensure you have the following installed:
@@ -70,4 +73,5 @@ After successful building the project, the executable will be located in the `bu
     python python/pyvizionsdk_cv.py
     python python/pyvizionsdkcapture.py
     python python/pyvizionsdk_ehdr.py
+    python python/pyvizionsdk_cv_saveimg.py
     ```
