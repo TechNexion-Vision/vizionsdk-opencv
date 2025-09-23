@@ -1,23 +1,33 @@
 # VizionSDK with OpenCV
 
 - This sample project demonstrates how to use CMake to build and run a C++ project integrating VizionSDK with OpenCV. 
-- In addition to the C++ examples, Python example code and usage instructions are also included in the documentation.
+- In addition to the C++ examples, Python and C# examples with usage instructions are included in the documentation.
 
-## Sample Code Overview
+## **Sample Code Overview**
 
-The following sample programs demonstrate key functionalities using VizionSDK (or pyvizionsdk) together with OpenCV:
+The following sample programs demonstrate how to use **VizionSDK** (or **pyvizionsdk** / **CSVizionSDK**) with **OpenCV** for various camera and image processing tasks:
 
-- **vizionsdk_opencv.cpp / pyvizionsdk_cv.py**  
-  Captures images from the camera and displays them using OpenCV's `imshow` function.
+### **1. Image Display**  
+`displayImg` : Captures images from the camera and displays them in a window using OpenCV’s `imshow` function.
 
-- **vizionsdkcapture.cpp / pyvizionsdkcapture.py**  
-  Adjusts the image brightness through VizionSDK and captures video frames with OpenCV’s `VideoCapture`.
+### **2. Adjust Brightness & Capture Video**   
+`captureImg` : Demonstrates how to adjust image brightness via VizionSDK and capture video frames using OpenCV’s `VideoCapture`.
 
-- **vizionsdk_ehdr.cpp / pyvizionsdk_ehdr.py**  
-  Shows how to configure the eHDR maximum exposure number and capture images using OpenCV’s `VideoCapture`.
+### **3. eHDR Configuration**  
+`setehdr` : Shows how to configure the **eHDR maximum exposure setting** and capture images using OpenCV’s `VideoCapture`.
 
-- **vizionsdk_cv_saveimg.cpp / pyvizionsdk_cv_saveimg.py**  
-  Captures images from the camera and saves them using OpenCV's `imsave` function.
+> ⚠️ **Warning**  
+> - **eHDR features** are only supported on the following devices:  
+>   - VCS-AR0821 / VCS-AR0822  
+>   - VC-VLS-AR0821 / VC-VLS-AR0822  
+>   - VC-VL-GM2-AR0821 / VC-VL-GM2-AR0822  
+> - Running the eHDR example on unsupported devices may cause **undefined behavior**.  
+> - Make sure **eHDR mode** is **enabled** before running the eHDR example.
+
+### **4. Save Images**  
+`saveImg` : Captures images from the camera and saves them to disk using OpenCV’s `imwrite` function.
+
+---
 
 ## Prerequisites
 
@@ -37,41 +47,28 @@ Before building and running this project, ensure you have the following installe
     ```
 
 3. **OpenCV(version 4.9 or newer)**  
-  - For C++ Development:  
+   - **For C++ Development:**    
     - OpenCV can be downloaded at release page: [OpenCV](https://opencv.org/releases/)
       - **Windows**: Before building the sample code, please ensure the path in [CMakeList.txt](https://github.com/TechNexion-Vision/vizionsdk-opencv/tree/main/cpp/CMakeLists.txt#L19) is correctly set to your local OpenCV installation.
       - **Linux**: 
         To install OpenCV, please follow the steps provided in the official tutorial: [OpenCV installation](https://docs.opencv.org/4.9.0/d7/d9f/tutorial_linux_install.html)   
-  - For Python Development: Install with `pip install opencv-python`
-   
-## Building for C++ Project
+   - **For Python Development:**   
+      Install with:
+      ```
+      pip install opencv-python
+      ```
+    - **For C# Development:**  
+      Install the OpenCVSharp4 NuGet package for .NET:
+      ```bash
+      dotnet add package OpenCvSharp4
+      ```
+      > **Note:**  
+      Ensure that the `OpenCvSharp4.runtime.win` package is also installed for Windows runtime dependencies.
 
-1. Open Terminal and navigate to the directory of the project
-2. Create a build directory: `mkdir build && cd build`
-3. Generate build files using CMake:
-    ```
-    cmake ..
-    ```
-4. Build the project using the generated build files: 
-    - **Windows**: `cmake --build . --config Release`
-    - **Linux**: `make`
+## Documents
+- Github Pages: https://github.com/TechNexion
+- VizionSDK Overview: https://developer.technexion.com/docs/vision-software/vizionsdk
+- VizionSDK API User Guide: https://developer.technexion.com/docs/category/recommended-api-v25041
 
-## Running the execution
-> ⚠️ Warning:  
-> - eHDR-related properties are only supported on **VCI-AR0821** and **VCI-AR0822**. Running eHDR example on unsupported devices may result in undefined behavior.  
-> - Ensure that **eHDR mode** is **enabled** before running the eHDR example.
-
-After successful building the project, the executable will be located in the `build` directory
-
-- **Windows**: Run the executable from the Command Prompt or double-click it in File Explorer.  
-- **Linux**: Open a terminal and run it using `./{execution_name}`.
-
-## Running the Python project
-
-- **Use the following commands to run the examples**
-    ```
-    python python/pyvizionsdk_cv.py
-    python python/pyvizionsdkcapture.py
-    python python/pyvizionsdk_ehdr.py
-    python python/pyvizionsdk_cv_saveimg.py
-    ```
+## Related links
+- [Technexion Main Page](https://www.technexion.com/)
