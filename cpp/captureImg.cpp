@@ -1,5 +1,5 @@
 /*
-vizionsdkcapture.cpp - Demonstrates how to use vizionsdk to control ISP camera brightness
+captureImg.cpp - Demonstrates how to use vizionsdk to control ISP camera brightness
 
 Opens a video window with live camera stream.In the window, keys can be pressed to
 increase or decrease the brightness.

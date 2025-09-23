@@ -1,5 +1,5 @@
 """
-pyvizionsdk_cv_saveimg.cpp - Demonstrates how to use vizionsdk to get the image and save the image by OpenCV.
+saveImg.py - Demonstrates how to use pyvizionsdk to get the image and save the image by OpenCV.
 """
 
 import pyvizionsdk

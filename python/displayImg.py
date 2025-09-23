@@ -1,5 +1,5 @@
 """
-pyvizionsdk_cv.cpp - Demonstrates how to use vizionsdk to get the image and display the image by OpenCV.
+displayImg.py - Demonstrates how to use pyvizionsdk to get the image and display the image by OpenCV.
 """
 
 import pyvizionsdk

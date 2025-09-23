@@ -1,5 +1,5 @@
 /* 
-vizionsdk_opencv.cpp - Demonstrates how to use vizionsdk to get the image and display the image by OpenCV.
+saveImg.cpp - Demonstrates how to use vizionsdk to get the image and save the image by OpenCV.
 */
 #include <iostream>
 #include <vector>
@@ -11,6 +11,8 @@ vizionsdk_opencv.cpp - Demonstrates how to use vizionsdk to get the image and di
 #endif
 
 #include "VizionSDK.h"
+#include <opencv2/core.hpp>
+#include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 int main() {
 
@@ -36,23 +38,23 @@ int main() {
 
     VxOpen(cam);
 
-    // set format to min size for mjpg format
+    // set format to 1920*1080 for UYVY format
     std::vector<VxFormat> fmt_list;
     VxGetFormatList(cam, fmt_list);
-    int min_width = 1920;
-    int min_height = 1080;
-    VxFormat min_fmt;
+    int cap_width = 1920;
+    int cap_height = 1080;
+    VxFormat cap_fmt;
     for (auto fmt : fmt_list) {
-        // find MJPG smallest size format
-        if (fmt.format == VX_IMAGE_FORMAT::MJPG &&
-            fmt.width * fmt.height < min_width * min_height) {
-            min_width = fmt.width;
-            min_height = fmt.height;
-            min_fmt = fmt;
+        // find UYVY 1920*1080 format
+        if (fmt.format == VX_IMAGE_FORMAT::UYVY &&
+            fmt.width * fmt.height == cap_width * cap_height) {
+            cap_width = fmt.width;
+            cap_height = fmt.height;
+            cap_fmt = fmt;
         }
     }
 
-    if (VxSetFormat(cam, min_fmt) == 0) {
+    if (VxSetFormat(cam, cap_fmt) == 0) {
         std::cout << "Set Capture Format Success!" << std::endl;
     } else {
         std::cout << "Set Capture Format Failed!" << std::endl;
@@ -66,12 +68,15 @@ int main() {
     int raw_size = 0;
     VxGetImage(cam, raw_data, &raw_size, 2500);
 
-    // retrieve the data into the mat array and display with cv2.imshow()
+    // retrieve the data into the mat array and save with cv2.imwrite()
     cv::Mat matImg;
-    matImg = cv::imdecode(cv::Mat(1, raw_size, CV_8UC1, raw_data), cv::IMREAD_COLOR);
-    cv::imshow("MJPG Image", matImg);
-    cv::waitKey(0);
-    cv::destroyAllWindows();
+    matImg = cv::Mat(cap_height, cap_width, CV_8UC2, raw_data);
+
+     // convert from UYVY to BGR
+    cv::Mat bgrImg;
+    cv::cvtColor(matImg, bgrImg, cv::COLOR_YUV2BGR_UYVY);
+
+    cv::imwrite("capture.png", bgrImg);
 
     VxStopStreaming(cam);
     VxClose(cam);

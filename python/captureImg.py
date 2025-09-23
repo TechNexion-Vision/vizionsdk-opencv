@@ -1,23 +1,19 @@
 """
-pyvizionsdkcapture.py - Demonstrates how to use vizionsdk to control ISP camera brightness
+captureImg.py - Demonstrates how to use pyvizionsdk to control ISP camera brightness
 
-Opens a video window with live camera stream.  In the window, a keys can be pressed to
-increase or decrease the number of exposures used for eHDR.
+Opens a video window with live camera stream.  In the window, keys can be pressed to
+increase or decrease the brightness.
 
-Reads the the exposure time and gain, and displays on video window.
-
-This script only works with cameras that have eHDR functionality:
- AR0821
- AR0822
-
-Keys:
- e: increase the maximum number of exposures for eHDR (from 1 to 4 depending on the camera).
-    When it reaches the maximum, it rolls over to 1 exposure.
+ u: increase
+ d: decrease
  q: stop playing video and quit program
 """
+
 import pyvizionsdk
 from pyvizionsdk import VX_ISP_IMAGE_PROPERTIES, VX_IMAGE_FORMAT
+
 import cv2
+import numpy as np
 
 import platform
 
@@ -28,10 +24,12 @@ def __draw_label(img, text, pos):
     thickness = cv2.FILLED
     margin = 5
     txt_size = cv2.getTextSize(text, font_face, scale, thickness)
+
     end_x = pos[0] + txt_size[0][0] + margin
     end_y = pos[1] - txt_size[0][1] - margin
     start_x = pos[0] - margin
     start_y = pos[1] + margin
+
     cv2.rectangle(img, (start_x, start_y), (end_x, end_y), (0,0,0), thickness)
     cv2.putText(img, text, pos, font_face, scale, color, 1, cv2.LINE_AA)
 
@@ -42,7 +40,7 @@ if result < 1:
     quit()
 
 # Print camera_list
-print("Discovered cameras:")
+print("Device List:\n")
 for camera in camera_list:
     print(camera)
 
@@ -50,27 +48,30 @@ for camera in camera_list:
 idx = 0
 camera = pyvizionsdk.VxInitialCameraDevice(idx)
 
-# open camera
+# Open camera
 result = pyvizionsdk.VxOpen(camera)
 print("Open camera return code:", result)
 
-# get format
+# Get format
 result, format_list = pyvizionsdk.VxGetFormatList(camera)
+print("Get format return code:", result)
+
 mjpg_format = None
 min_resolution = float('inf')
 for format in format_list:
-    # Fine the minimum resolution in MJPG format
+    # Find the minimum resolution in MJPG format
     if format.format == VX_IMAGE_FORMAT.VX_IMAGE_FORMAT_MJPG:
         resolution = format.width * format.height
         if resolution < min_resolution:
             min_resolution = resolution
             mjpg_format = format
-print("Return code:", result)
 
-# set format
+# Set format
 result = pyvizionsdk.VxSetFormat(camera, mjpg_format)
+
 min_width = mjpg_format.width
 min_height = mjpg_format.height
+
 print(f"Video resolution: ", min_width, "x", min_height)
 
 # Capture image with opencv VideoCapture API
@@ -82,31 +83,35 @@ else:
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, min_width)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, min_height)
 
-# get the eHDR info
-result, min_ehdr, max_ehdr, step_ehdr, def_ehdr = pyvizionsdk.VxGetISPImageProcessingRange(camera, VX_ISP_IMAGE_PROPERTIES.ISP_EHDR_EXPOSURE_MAX_NUMBER)
-print(f"eHDR min: {min_ehdr}, max: {max_ehdr}, step: {step_ehdr}, default: {def_ehdr}, return code: {result}")
-ehdr_exposures = def_ehdr
-print(f"Playing video with eHDR exposures = {ehdr_exposures}, press q in window to exit...")
+# Get the brightness range
+result, min_brightness, max_brightness, step, def_brightness = pyvizionsdk.VxGetISPImageProcessingRange(camera, VX_ISP_IMAGE_PROPERTIES.ISP_IMAGE_BRIGHTNESS)
+print(f"Brightness min: {min_brightness}, max: {max_brightness}, step: {step}, default: {def_brightness}, return code: {result}")
+
+# Get the brightness
+result, brightness, flag = pyvizionsdk.VxGetISPImageProcessing(camera, VX_ISP_IMAGE_PROPERTIES.ISP_IMAGE_BRIGHTNESS)
+print(f"Initial ISP brightness: {brightness}, flag: {flag}, return code: {result}")
+
+# Set the brightness
+print(f"Playing video with brightness {brightness}, press q in window to exit...")
 
 # Capture video and display
 while True:
     ret, frame = cap.read()
     if ret:
-        ret, gain = pyvizionsdk.VxGetCurrentGain(camera)
-        ret, exposure = pyvizionsdk.VxGetCurrentExposure(camera)
-        __draw_label(frame, f"ehdr_exposures: {ehdr_exposures}", (20,60))
-        __draw_label(frame, "e: increase exposures, q: exit", (20,20))
-        __draw_label(frame, f"gain: {gain}", (20,80))
-        __draw_label(frame, f"exposure (us): {exposure}", (20,100))
-        cv2.imshow(f"Adjust eHDR Exposures", frame)
+        __draw_label(frame, f"brightness: {brightness}", (20,20))
+        __draw_label(frame, "u: increase, d: decrease, q: exit", (20,40))
+        cv2.imshow(f"Adjust brightness", frame)
         key = cv2.waitKey(1) & 0xFF
-        if key == ord('e'):
-            if ehdr_exposures < max_ehdr:
-                ehdr_exposures = ehdr_exposures + step_ehdr
-            else:
-                ehdr_exposures = min_ehdr
-            result = pyvizionsdk.VxSetISPImageProcessing(camera, VX_ISP_IMAGE_PROPERTIES.ISP_EHDR_EXPOSURE_MAX_NUMBER, ehdr_exposures)
-            print(f"Set max ehdr exposures : {ehdr_exposures}")
+        if key == ord('u'):
+            if brightness < max_brightness:
+                brightness = brightness + step
+            result = pyvizionsdk.VxSetISPImageProcessing(camera, VX_ISP_IMAGE_PROPERTIES.ISP_IMAGE_BRIGHTNESS, brightness)
+            print(f"Set brightness to: {brightness}")
+        if key == ord('d'):
+            if brightness > min_brightness:
+                brightness = brightness - step
+            result = pyvizionsdk.VxSetISPImageProcessing(camera, VX_ISP_IMAGE_PROPERTIES.ISP_IMAGE_BRIGHTNESS, brightness)
+            print(f"Set brightness to: {brightness}")
         if key == ord('q'):
             break
     else:
@@ -115,5 +120,6 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
+
 # close camera
 pyvizionsdk.VxClose(camera)
