@@ -11,10 +11,10 @@ find_package(vizionsdk REQUIRED)
 set(SOURCES "${CMAKE_SOURCE_DIR}")
 
 # Add executable
-add_executable(VizionCapture ${SOURCES}/vizionsdkcapture.cpp)
-add_executable(VizionOpenCV ${SOURCES}/vizionsdk_opencv.cpp)
-add_executable(VizioneHDR ${SOURCES}/vizionsdk_ehdr.cpp)
-add_executable(VizionSave ${SOURCES}/vizionsdk_cv_saveimg.cpp)
+add_executable(VizionCapture ${SOURCES}/captureImg.cpp)
+add_executable(VizionDisplay ${SOURCES}/displayImg.cpp)
+add_executable(VizioneHDR ${SOURCES}/setehdr.cpp)
+add_executable(VizionSave ${SOURCES}/saveImg.cpp)
 
 # find opencv library
 if(WIN32)
@@ -32,7 +32,7 @@ PRIVATE
 vizionsdk::VizionSDK
 ${OpenCV_LIBS}
 )
-target_link_libraries(VizionOpenCV
+target_link_libraries(VizionDisplay
 PRIVATE
 vizionsdk::VizionSDK
 ${OpenCV_LIBS}
