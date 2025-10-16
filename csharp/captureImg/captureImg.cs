@@ -66,31 +66,8 @@ class CaptureImg
         // Open camera
         CSVizionSDK.VxOpen(cam);
 
-        // Get available formats
-        VxFormatVector fmtList = new VxFormatVector();
-        CSVizionSDK.VxGetFormatList(cam, fmtList);
-
-        int minWidth = 1920;
-        int minHeight = 1080;
-        VxFormat mjpgFmt = new VxFormat();
-
-        foreach (var fmt in fmtList)
-        {
-            // Find minimum resolution in MJPG format
-            if (fmt.format == VX_IMAGE_FORMAT.MJPG &&
-                (fmt.width * fmt.height < minWidth * minHeight))
-            {
-                minWidth = fmt.width;
-                minHeight = fmt.height;
-                mjpgFmt = fmt;
-            }
-        }
-
-        // Set capture format
-        if (CSVizionSDK.VxSetFormat(cam, mjpgFmt) == 0)
-            Console.WriteLine("Set Capture Format Success!");
-        else
-            Console.WriteLine("Set Capture Format Failed!");
+        int minWidth = 640;
+        int minHeight = 480;
 
         Console.WriteLine($"Video resolution: {minWidth} x {minHeight}");
 
@@ -171,6 +148,5 @@ class CaptureImg
         
         // Cleanup
         devList.Dispose();
-        fmtList.Dispose();
     }
 }

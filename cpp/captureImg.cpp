@@ -64,29 +64,8 @@ int main() {
     // Open camera
     VxOpen(cam);
 
-    // Get format
-    std::vector<VxFormat> fmt_list;
-    VxGetFormatList(cam, fmt_list);
-
-    int min_width = 1920;
-    int min_height = 1080;
-    VxFormat mjpg_fmt;
-    for (auto fmt : fmt_list) {
-        // Find the minimum resolution in MJPG format
-        if (fmt.format == VX_IMAGE_FORMAT::MJPG &&
-            fmt.width * fmt.height < min_width * min_height) {
-            min_width = fmt.width;
-            min_height = fmt.height;
-            mjpg_fmt = fmt;
-        }
-    }
-
-    // Set format
-    if (VxSetFormat(cam, mjpg_fmt) == 0) {
-        std::cout << "Set Capture Format Success!" << std::endl;
-    } else {
-        std::cout << "Set Capture Format Failed!" << std::endl;
-    }
+    int min_width = 640;
+    int min_height = 480;
 
     std::cout << "Video resolution: " << min_width << " x " << min_height << std::endl;
 

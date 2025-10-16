@@ -36,28 +36,37 @@ class SaveImg
         // Open camera
         CSVizionSDK.VxOpen(cam);
 
+        Console.WriteLine("Choose a format:\n1. UYVY\n2. MJPG(Default)");
+        Console.Write("Please enter format (1 or 2): ");
+        int fmtId = int.Parse(Console.ReadLine() ?? "1");
+
+        VX_IMAGE_FORMAT selectFormat = (fmtId == 1)
+            ? VX_IMAGE_FORMAT.UYVY
+            : VX_IMAGE_FORMAT.MJPG;
+
+
         // Get available formats
         VxFormatVector fmtList = new VxFormatVector();
         CSVizionSDK.VxGetFormatList(cam, fmtList);
 
-        int minWidth = 1920;
-        int minHeight = 1080;
-        VxFormat uyvyFmt = new VxFormat();
+        int minWidth = 640;
+        int minHeight = 480;
+        VxFormat imgFmt = new VxFormat();
 
         foreach (var fmt in fmtList)
         {
-            // Find minimum resolution in MJPG format
-            if (fmt.format == VX_IMAGE_FORMAT.UYVY &&
+            // Find minimum resolution in UYVY/MJPG format
+            if (fmt.format == selectFormat &&
                 (fmt.width * fmt.height == minWidth * minHeight))
             {
                 minWidth = fmt.width;
                 minHeight = fmt.height;
-                uyvyFmt = fmt;
+                imgFmt = fmt;
             }
         }
 
         // Set capture format
-        if (CSVizionSDK.VxSetFormat(cam, uyvyFmt) == 0)
+        if (CSVizionSDK.VxSetFormat(cam, imgFmt) == 0)
             Console.WriteLine("Set Capture Format Success!");
         else
             Console.WriteLine("Set Capture Format Failed!");
@@ -78,18 +87,29 @@ class SaveImg
             Console.WriteLine($"Get Image: {result} / {dataSize}");
         }
 
-        // Create Mat from raw buffer
-        using var matImg = new Mat(minHeight, minWidth, MatType.CV_8UC2);
+        if (selectFormat == VX_IMAGE_FORMAT.UYVY)
+        {
+            // Create Mat from raw buffer
+            using var matImg = new Mat(minHeight, minWidth, MatType.CV_8UC2);
 
-        // Copy byte array into Mat
-        Marshal.Copy(buffer, 0, matImg.Data, buffer.Length);
+            // Copy byte array into Mat
+            Marshal.Copy(buffer, 0, matImg.Data, buffer.Length);
 
-        // Convert from UYVY to BGR
-        using var bgrImg = new Mat();
-        Cv2.CvtColor(matImg, bgrImg, ColorConversionCodes.YUV2BGR_UYVY);
+            // Convert from UYVY to BGR
+            Mat bgrImg = new Mat();
+            Cv2.CvtColor(matImg, bgrImg, ColorConversionCodes.YUV2BGR_UYVY);
+            Cv2.ImWrite("capture.png", bgrImg);
+        }
+        else if (selectFormat == VX_IMAGE_FORMAT.MJPG)
+        {
+            // Create Mat from raw buffer
+            using var matImg = new Mat(1, buffer.Length, MatType.CV_8UC1);
 
-        // Save image
-        Cv2.ImWrite("capture.png", bgrImg);
+            // Copy byte array into Mat
+            Marshal.Copy(buffer, 0, matImg.Data, buffer.Length);
+            using var decoded = Cv2.ImDecode(matImg, ImreadModes.Color);
+            Cv2.ImWrite("capture.png", decoded);
+        }
 
         // Close camera
         CSVizionSDK.VxStopStreaming(cam);

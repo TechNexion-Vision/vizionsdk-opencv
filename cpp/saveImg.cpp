@@ -1,4 +1,4 @@
-/* 
+/*
 saveImg.cpp - Demonstrates how to use vizionsdk to get the image and save the image by OpenCV.
 */
 #include <iostream>
@@ -14,8 +14,8 @@ saveImg.cpp - Demonstrates how to use vizionsdk to get the image and save the im
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
-int main() {
 
+int main() {
     // get the camera list
     std::vector<std::string> dev_list;
     int cam_num = VxDiscoverCameraDevices(dev_list);
@@ -38,16 +38,27 @@ int main() {
 
     VxOpen(cam);
 
-    // set format to 1920*1080 for UYVY format
+    // set format to 640*480 for UYVY or MJPG format
+    VX_IMAGE_FORMAT selectFormat;
+    std::cout << "Choose a format: \n1. UYVY\n2. MJPG(Default)" << std::endl;
+    std::cout << "Please enter format(1 or 2): ";
+    int fmtId;
+    std::cin >> fmtId;
+
+    if (fmtId == 1) {
+        selectFormat = VX_IMAGE_FORMAT::UYVY;
+    } else {
+        selectFormat = VX_IMAGE_FORMAT::MJPG;
+    }
+
     std::vector<VxFormat> fmt_list;
     VxGetFormatList(cam, fmt_list);
-    int cap_width = 1920;
-    int cap_height = 1080;
+    int cap_width = 640;
+    int cap_height = 480;
     VxFormat cap_fmt;
     for (auto fmt : fmt_list) {
-        // find UYVY 1920*1080 format
-        if (fmt.format == VX_IMAGE_FORMAT::UYVY &&
-            fmt.width * fmt.height == cap_width * cap_height) {
+        // find UYVY 640*480 format
+        if (fmt.format == selectFormat && fmt.width * fmt.height == cap_width * cap_height) {
             cap_width = fmt.width;
             cap_height = fmt.height;
             cap_fmt = fmt;
@@ -70,15 +81,19 @@ int main() {
 
     // retrieve the data into the mat array and save with cv2.imwrite()
     cv::Mat matImg;
-    matImg = cv::Mat(cap_height, cap_width, CV_8UC2, raw_data);
+    if (selectFormat == VX_IMAGE_FORMAT::UYVY) {
+        matImg = cv::Mat(cap_height, cap_width, CV_8UC2, raw_data);
 
-     // convert from UYVY to BGR
-    cv::Mat bgrImg;
-    cv::cvtColor(matImg, bgrImg, cv::COLOR_YUV2BGR_UYVY);
-
-    cv::imwrite("capture.png", bgrImg);
+        // convert from UYVY to BGR
+        cv::Mat bgrImg;
+        cv::cvtColor(matImg, bgrImg, cv::COLOR_YUV2BGR_UYVY);
+        cv::imwrite("capture.png", bgrImg);
+    } else if (selectFormat == VX_IMAGE_FORMAT::MJPG) {
+        matImg = cv::imdecode(cv::Mat(1, raw_size, CV_8UC1, raw_data), cv::IMREAD_COLOR);
+        cv::imwrite("capture.png", matImg);
+    }
 
     VxStopStreaming(cam);
     VxClose(cam);
-	return 0;
+    return 0;
 }

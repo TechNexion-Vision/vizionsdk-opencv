@@ -54,23 +54,9 @@ camera = pyvizionsdk.VxInitialCameraDevice(idx)
 result = pyvizionsdk.VxOpen(camera)
 print("Open camera return code:", result)
 
-# get format
-result, format_list = pyvizionsdk.VxGetFormatList(camera)
-mjpg_format = None
-min_resolution = float('inf')
-for format in format_list:
-    # Fine the minimum resolution in MJPG format
-    if format.format == VX_IMAGE_FORMAT.VX_IMAGE_FORMAT_MJPG:
-        resolution = format.width * format.height
-        if resolution < min_resolution:
-            min_resolution = resolution
-            mjpg_format = format
-print("Return code:", result)
+min_width = 640
+min_height = 480
 
-# set format
-result = pyvizionsdk.VxSetFormat(camera, mjpg_format)
-min_width = mjpg_format.width
-min_height = mjpg_format.height
 print(f"Video resolution: ", min_width, "x", min_height)
 
 # Capture image with opencv VideoCapture API

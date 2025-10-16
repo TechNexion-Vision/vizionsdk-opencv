@@ -25,32 +25,41 @@ camera = pyvizionsdk.VxInitialCameraDevice(0)
 result = pyvizionsdk.VxOpen(camera)
 print("Open camera return code:", result)
 
+print("Choose a format:\n1. UYVY\n2. MJPG(Default)")
+fmt_id = int(input("Please enter format (1 or 2): ") or "1")
+select_format = VX_IMAGE_FORMAT.VX_IMAGE_FORMAT_UYVY if fmt_id == 1 else VX_IMAGE_FORMAT.VX_IMAGE_FORMAT_MJPG
+
 # get format
 result, format_list = pyvizionsdk.VxGetFormatList(camera)
-mjpg_format = None
-min_resolution = float('inf')
+cap_format = None
+min_width = 640
+min_height = 480
 for format in format_list:
-    # get mjpg format and minimum resolution
-    if format.format == VX_IMAGE_FORMAT.VX_IMAGE_FORMAT_MJPG:
+    if format.format == select_format:
         resolution = format.width * format.height
-        if resolution < min_resolution:
-            min_resolution = resolution
-            mjpg_format = format
-print("Return code:", result)
+        if (format.width * format.height) == (min_width * min_height) :
+            cap_format = format
 
 # set format
-result = pyvizionsdk.VxSetFormat(camera, mjpg_format)
+result = pyvizionsdk.VxSetFormat(camera, cap_format)
 
 # start streaming
 result = pyvizionsdk.VxStartStreaming(camera)
 
-# get the MJPG format image
-result, image = pyvizionsdk.VxGetImage(camera, 1000, mjpg_format)
+# get image
+result, image = pyvizionsdk.VxGetImage(camera, 1000, cap_format)
 
 # retrieve the data to opencv and display with cv2.imshow()
 nparr = np.frombuffer(image, np.uint8)
-image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-cv2.imshow("MJPG Image", image)
+
+if select_format == VX_IMAGE_FORMAT.VX_IMAGE_FORMAT_UYVY:
+    uyvy = nparr.reshape((min_height, min_width, 2))
+    bgr = cv2.cvtColor(uyvy, cv2.COLOR_YUV2BGR_UYVY)
+    cv2.imshow("UYVY Image", bgr)
+elif select_format == VX_IMAGE_FORMAT.VX_IMAGE_FORMAT_MJPG:
+    image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    cv2.imshow("MJPG Image", image)
+
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 

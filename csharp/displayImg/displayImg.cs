@@ -4,6 +4,7 @@ displayImg.cs - Demonstrates how to use CSVizionSDK to get the image and display
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using OpenCvSharp;
 using VizionSDKSharp;
 
@@ -36,28 +37,36 @@ class DisplayImg
         // Open camera
         CSVizionSDK.VxOpen(cam);
 
+        Console.WriteLine("Choose a format:\n1. UYVY\n2. MJPG(Default)");
+        Console.Write("Please enter format (1 or 2): ");
+        int fmtId = int.Parse(Console.ReadLine() ?? "1");
+
+        VX_IMAGE_FORMAT selectFormat = (fmtId == 1)
+            ? VX_IMAGE_FORMAT.UYVY
+            : VX_IMAGE_FORMAT.MJPG;
+
         // Get available formats
         VxFormatVector fmtList = new VxFormatVector();
         CSVizionSDK.VxGetFormatList(cam, fmtList);
 
-        int minWidth = 1920;
-        int minHeight = 1080;
-        VxFormat mjpgFmt = new VxFormat();
+        int minWidth = 640;
+        int minHeight = 480;
+        VxFormat minFmt = new VxFormat();
 
         foreach (var fmt in fmtList)
         {
-            // Find minimum resolution in MJPG format
-            if (fmt.format == VX_IMAGE_FORMAT.MJPG &&
-                (fmt.width * fmt.height < minWidth * minHeight))
+            // Find minimum resolution in UYVY/MJPG format
+            if (fmt.format == selectFormat &&
+                (fmt.width * fmt.height == minWidth * minHeight))
             {
                 minWidth = fmt.width;
                 minHeight = fmt.height;
-                mjpgFmt = fmt;
+                minFmt = fmt;
             }
         }
 
         // Set capture format
-        if (CSVizionSDK.VxSetFormat(cam, mjpgFmt) == 0)
+        if (CSVizionSDK.VxSetFormat(cam, minFmt) == 0)
             Console.WriteLine("Set Capture Format Success!");
         else
             Console.WriteLine("Set Capture Format Failed!");
@@ -78,15 +87,30 @@ class DisplayImg
             Console.WriteLine($"Get Image: {result} / {dataSize}");
         }
 
-        Mat image = Cv2.ImDecode(buffer, ImreadModes.Color);
-
-        if (image.Empty())
+       if (selectFormat == VX_IMAGE_FORMAT.UYVY)
         {
-            Console.WriteLine("Failed to decode image.");
-            return;
+            // Create Mat from raw buffer
+            using var matImg = new Mat(minHeight, minWidth, MatType.CV_8UC2);
+
+            // Copy byte array into Mat
+            Marshal.Copy(buffer, 0, matImg.Data, buffer.Length);
+
+            // Convert from UYVY to BGR
+            Mat bgrImg = new Mat();
+            Cv2.CvtColor(matImg, bgrImg, ColorConversionCodes.YUV2BGR_UYVY);
+            Cv2.ImShow("UYVY Image", bgrImg);
+        }
+        else if (selectFormat == VX_IMAGE_FORMAT.MJPG)
+        {
+            // Create Mat from raw buffer
+            using var matImg = new Mat(1, buffer.Length, MatType.CV_8UC1);
+
+            // Copy byte array into Mat
+            Marshal.Copy(buffer, 0, matImg.Data, buffer.Length);
+            using var decoded = Cv2.ImDecode(matImg, ImreadModes.Color);
+            Cv2.ImShow("MJPG Image", decoded);
         }
 
-        Cv2.ImShow("MJPG Image", image);
         Cv2.WaitKey(0);
         Cv2.DestroyAllWindows();
 
