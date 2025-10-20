@@ -51,7 +51,7 @@ int main() {
         selectFormat = VX_IMAGE_FORMAT::MJPG;
     }
 
-    // set format to min size for mjpg format
+    // set format to min size
     std::vector<VxFormat> fmt_list;
     VxGetFormatList(cam, fmt_list);
     int min_width = 640;
@@ -80,7 +80,6 @@ int main() {
     VxGetImage(cam, raw_data, &raw_size, 2500);
 
     // retrieve the data into the mat array and display with cv2.imshow()
-    // retrieve the data into the mat array and save with cv2.imwrite()
     cv::Mat matImg;
     if (selectFormat == VX_IMAGE_FORMAT::UYVY) {
         matImg = cv::Mat(min_height, min_width, CV_8UC2, raw_data);

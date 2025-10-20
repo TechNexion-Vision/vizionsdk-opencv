@@ -46,7 +46,7 @@ result = pyvizionsdk.VxSetFormat(camera, cap_format)
 # start streaming
 result = pyvizionsdk.VxStartStreaming(camera)
 
-# get the MJPG format image
+# get image
 result, image = pyvizionsdk.VxGetImage(camera, 1000, cap_format)
 
 # retrieve the data to opencv and save with cv2.imwrite()

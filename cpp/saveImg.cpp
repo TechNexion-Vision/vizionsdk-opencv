@@ -57,7 +57,6 @@ int main() {
     int cap_height = 480;
     VxFormat cap_fmt;
     for (auto fmt : fmt_list) {
-        // find UYVY 640*480 format
         if (fmt.format == selectFormat && fmt.width * fmt.height == cap_width * cap_height) {
             cap_width = fmt.width;
             cap_height = fmt.height;
