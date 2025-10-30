@@ -63,12 +63,12 @@ Before building and running this project, ensure you have the following installe
       dotnet add package OpenCvSharp4
       ```
       > **Note:**  
-      Ensure that the `OpenCvSharp4.runtime.win` package is also installed for Windows runtime dependencies.
+      Ensure that the `OpenCvSharp4.runtime.{OS}` package is also installed for your platform OS runtime dependencies.
 
 ## Documents
 - Github Pages: https://github.com/TechNexion
 - VizionSDK Overview: https://developer.technexion.com/docs/vision-software/vizionsdk
-- VizionSDK API User Guide: https://developer.technexion.com/docs/category/recommended-api-v25041
+- VizionSDK API User Guide: https://developer.technexion.com/docs/category/vizionsdk-api
 
 ## Related links
 - [Technexion Main Page](https://www.technexion.com/)

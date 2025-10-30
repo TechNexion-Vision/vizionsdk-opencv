@@ -21,13 +21,30 @@ Here’s an example configuration:
 <ItemGroup>
     <!-- Reference the CSVizionSDK NuGet package -->
     <PackageReference Include="CSVizionSDK" Version="VERSION" />
+    <PackageReference Include="CSVizionSDK.runtime.<OS>" Version="VERSION" />
+
     <!-- Reference the OpenCvSharp NuGet package -->
+    <PackageReference Include="OpenCvSharp4" Version="VERSION" />
+
+    <!-- Windows -->
     <PackageReference Include="OpenCvSharp4.runtime.win" Version="VERSION" />
-	<PackageReference Include="OpenCvSharp4.Windows" Version="VERSION" />
+    <!-- Linux-x64 -->
+	<PackageReference Include="OpenCvSharp4.official.runtime.linux-x64" Version="VERSION" />
+    <!-- Linux-arm64 -->
+	<PackageReference Include="OpenCvSharp4.runtime.linux-arm" Version="VERSION" />
+
 </ItemGroup>
 </Project>
 ```
-Replace `VERSION` with the correct version of the CSVizionSDK/OpenCvSharp package.
+:::info
+- The sample code uses **Windows** as the default platform. Please replace it with your actual platform type.
+- Replace `VERSION` with the appropriate version of the **CSVizionSDK/OpenCvSharp4** package.
+- Replace `OS` with the correct operating system identifier.  
+  Runtime package names include the target platform:
+    - `CSVizionSDK.runtime.win-x64`
+    - `CSVizionSDK.runtime.linux-x64`
+    - `CSVizionSDK.runtime.linux-arm64`
+:::
 
 Ensure that the target framework matches the one supported by the package, such as:
 - net8.0 (recommended)
@@ -66,4 +83,4 @@ Follow the steps below to build and run the sample:
 
 If you like to use other functions from CSVizionSDK, please visit to our website to see other API.
 
-**API User Guide** : https://developer.technexion.com/docs/category/recommended-api-v25041
+**API User Guide** : https://developer.technexion.com/docs/category/vizionsdk-api
