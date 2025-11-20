@@ -17,10 +17,12 @@ The following sample programs demonstrate how to use **VizionSDK** (or **pyvizio
 `setehdr` : Shows how to configure the **eHDR maximum exposure setting** and capture images using OpenCV’s `VideoCapture`.
 
 > ⚠️ **Warning**  
-> - **eHDR features** are only supported on the following devices:  
+> - **eHDR features** are only supported on the following devices: 
+>   - VCI-AR0821 / VCI-AR0822
 >   - VCS-AR0821 / VCS-AR0822  
->   - VC-VLS-AR0821 / VC-VLS-AR0822  
->   - VC-VL-GM2-AR0821 / VC-VL-GM2-AR0822  
+>   - VLS3-AR0821 / VLS3-AR0822  
+>   - VLS-GM2-AR0821 /VLS-GM2-AR0822  
+>   - TEVS-AR0821 / TEVS-AR0822
 > - Running the eHDR example on unsupported devices may cause **undefined behavior**.  
 > - Make sure **eHDR mode** is **enabled** before running the eHDR example.
 
